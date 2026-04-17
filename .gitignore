@@ -1,25 +1,91 @@
+# Dependencies
+node_modules/
+packages/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+dist/
+build/
+out/
+bin/
+obj/
+publish/
+
+# Docker
+docker-compose.override.yml
+.docker/
+docker-compose.*.yml
+
+# IDE
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
+*~
+.DS_Store
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-# Editor directories and files
-.vscode/*
-.vs/
-!.vscode/extensions.json
-.idea
-.DS_Store
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# .NET
+*.nupkg
+*.snupkg
+*.pidb
+*.userprefs
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.sln.ide
+*.dbmdl
+*.jfm
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+_ReSharper*/
+*.csproj.user
+
+# Frontend specific
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vercel
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Visual Studio
+.vs/
+*.opendb
+*.dbmdl
+*.jfm
+*.pfx
+*.publishsettings
+*.vcxproj.user
+*.sln.ide
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.DotSettings.user
