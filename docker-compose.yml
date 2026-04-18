@@ -1,5 +1,5 @@
 services:
-  # Banco de dados
+  
   postgres:
     image: postgres:15-alpine
     container_name: ofiador_db
@@ -15,9 +15,9 @@ services:
     networks:
       - ofiador_network
 
-  # Backend API
+  
   backend:
-    build: ./backend
+    build: ./backend/Ofiador.API
     container_name: ofiador_backend
     ports:
       - "8080:8080"
@@ -28,7 +28,7 @@ services:
     networks:
       - ofiador_network
 
-  # Frontend
+  
   frontend:
     build: ./frontend
     container_name: ofiador_frontend
