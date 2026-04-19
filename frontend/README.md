@@ -1,16 +1,73 @@
-# React + Vite
+# Frontend - Sistema de Gestão
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📋 Pré-requisitos
 
-Currently, two official plugins are available:
+- Node.js (versão 18 ou superior)
+- npm ou yarn
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Instalação e Execução
 
-## React Compiler
+1. **Clone o repositório**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+git clone [url-do-repositorio]
+cd frontend
+```
 
-## Expanding the ESLint configuration
+2. **Instale as dependências**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+# ou
+# yarn install
+```
+
+3. **Configure as variáveis de ambiente**
+
+Crie um arquivo `.env` na raiz do projeto com o conteúdo abaixo:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+4. **Execute o projeto**
+
+```bash
+npm run dev
+# ou
+# yarn dev
+```
+
+5. **Acesse no navegador**
+
+http://localhost:5173
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── assets/      # Imagens, fonts, CSS
+├── components/  # Componentes reutilizáveis
+├── contexts/    # Context API (AuthContext)
+├── pages/       # Páginas da aplicação
+├── services/    # Integração com API
+├── App.jsx      # Rotas principais
+└── main.jsx     # Entry point
+```
+
+## 🔑 Funcionalidades
+
+- Autenticação de usuários (login / register / logout)
+- Rotas públicas e privadas
+- Dashboard e gerenciamento de clientes
+
+## 🛠️ Tecnologias
+
+- React 19
+- Vite
+- React Router DOM v7
+- Context API
+- TailwindCSS
+- Axios
+
+---

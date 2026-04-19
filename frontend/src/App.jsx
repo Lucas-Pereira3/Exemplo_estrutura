@@ -1,55 +1,73 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Clientes from './pages/Clientes';
 
+const theme = createTheme({
+    palette: {
+        primary: { main: '#1976d2' },
+        secondary: { main: '#dc004e' },
+    },
+    typography: {
+        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    },
+});
+
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useAuth();
-  
+
     if (loading) {
         return <div className="flex justify-center items-center h-screen">Carregando...</div>;
     }
-  
-    return user ? children : <Navigate to="/login" />;
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
 };
 
 function AppRoutes() {
     return (
         <Routes>
+            {/* Rota pública - sem layout */}
             <Route path="/login" element={<Login />} />
-            <Route
-                path="/dashboard"
-                element={
-                    <PrivateRoute>
-                        <Dashboard />
-                    </PrivateRoute>
-                }
-            />
-            <Route
-                path="/clientes"
-                element={
-                    <PrivateRoute>
-                        <Clientes />
-                    </PrivateRoute>
-                }
-            />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+
+            {/* Rotas protegidas - COM LAYOUT */}
+            <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/clientes" element={<Clientes />} />
+                <Route path="/empresas" element={<div className="p-6 text-center text-gray-500">Página de Empresas em desenvolvimento</div>} />
+                <Route path="/compras" element={<div className="p-6 text-center text-gray-500">Página de Compras em desenvolvimento</div>} />
+                <Route path="/faturas" element={<div className="p-6 text-center text-gray-500">Página de Faturas em desenvolvimento</div>} />
+                <Route path="/pagamentos" element={<div className="p-6 text-center text-gray-500">Página de Pagamentos em desenvolvimento</div>} />
+                <Route path="/relatorios" element={<div className="p-6 text-center text-gray-500">Página de Relatórios em desenvolvimento</div>} />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            </Route>
+
+            {/* Rota para qualquer caminho não encontrado */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
     );
 }
 
 function App() {
     return (
-        <Router>
-            <AuthProvider>
-                <Toaster position="top-right" />
-                <AppRoutes />
-            </AuthProvider>
-        </Router>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Router>
+                <AuthProvider>
+                    <Toaster position="top-right" />
+                    <AppRoutes />
+                </AuthProvider>
+            </Router>
+        </ThemeProvider>
     );
 }
 

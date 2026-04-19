@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = async (email, password) => {
+    /*const login = async (email, password) => {
         try {
             const response = await api.post('/auth/login', {
                 email,
@@ -38,7 +38,32 @@ export const AuthProvider = ({ children }) => {
             toast.error(error.response?.data?.message || 'Erro ao fazer login');
             return false;
         }
-    };
+    };*/
+
+    const login = async (email, password) => {
+    // Mock - qualquer email/senha funciona
+    if (email && password) {
+        // Simula delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const userData = {
+            id: 1,
+            nome: email.split('@')[0], 
+            email: email,
+            role: 'user',
+            token: 'mock-token-123'
+        };
+        
+        localStorage.setItem('token', userData.token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        toast.success('Login realizado com sucesso!');
+        return true;
+    } else {
+        toast.error('Preencha todos os campos');
+        return false;
+    }
+};
 
     const register = async (userData) => {
         try {
