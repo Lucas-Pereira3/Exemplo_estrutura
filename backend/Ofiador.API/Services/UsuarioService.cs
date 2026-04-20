@@ -1,5 +1,6 @@
 using Ofiador.API.Data;
 using Ofiador.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ofiador.API.Services
 {
@@ -26,6 +27,12 @@ namespace Ofiador.API.Services
             _context.SaveChanges();
 
             return usuario;
+        }
+
+        public Usuario? BuscarPorLogin(string login)
+        {
+            return _context.Usuarios
+                .FirstOrDefault(u => u.Login == login);
         }
 
         public bool VerificarSenha(string senha, string hash)

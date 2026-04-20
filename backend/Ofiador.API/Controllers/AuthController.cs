@@ -19,7 +19,36 @@ namespace Ofiador.API.Controllers
         public IActionResult Register([FromBody] AuthDTO dto)
         {
             var usuario = _usuarioService.CriarUsuario(dto.Nome, dto.Login, dto.Senha);
-            return Ok(usuario);
+
+            return Ok(new
+            {
+                usuario.IdUsuario,
+                usuario.Nome,
+                usuario.Login,
+                token = "fake-token"
+            });
+        }
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] AuthDTO dto)
+        {
+            var usuario = _usuarioService.BuscarPorLogin(dto.Login);
+
+            if (usuario == null)
+                return Unauthorized(new { message = "Usuário não encontrado" });
+
+            var senhaValida = _usuarioService.VerificarSenha(dto.Senha, usuario.SenhaHash);
+
+            if (!senhaValida)
+                return Unauthorized(new { message = "Senha inválida" });
+
+            return Ok(new
+            {
+                usuario.IdUsuario,
+                usuario.Nome,
+                usuario.Login,
+                token = "fake-token"
+            });
         }
     }
 }
