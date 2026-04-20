@@ -11,13 +11,21 @@ namespace Ofiador.API.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Usuario>()
                 .HasKey(u => u.IdUsuario);
+
+            modelBuilder.Entity<Empresa>().HasKey(e => e.IdEmpresa);
+
+            modelBuilder.Entity<Empresa>()
+                .HasIndex(e => e.Cnpj)
+                .IsUnique();
         }
 
         // Por enquanto, sem DbSets - vamos adicionar depois
         // Quando criar os modelos, descomente as linhas abaixo:
-        // public DbSet<Empresa> Empresas { get; set; }
+        public DbSet<Empresa> Empresas { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         // public DbSet<Cliente> Clientes { get; set; }
         // public DbSet<Compra> Compras { get; set; }
