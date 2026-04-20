@@ -1,5 +1,5 @@
 # Dependencies
-node_modules/
+**/node_modules/
 packages/
 *.user
 *.userosscache
@@ -9,8 +9,8 @@ packages/
 dist/
 build/
 out/
-bin/
-obj/
+**/bin/
+**/obj/
 publish/
 
 # Docker
@@ -39,6 +39,7 @@ lerna-debug.log*
 .env
 .env.local
 .env.*.local
+!.env.example
 
 # Database
 *.db
