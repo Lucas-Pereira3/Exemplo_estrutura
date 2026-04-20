@@ -8,9 +8,9 @@ CREATE TABLE empresa (
 
 CREATE TABLE usuario(
 	id_usuario SERIAL PRIMARY KEY,
-	nome VARCHAR(100),
-	login VARCHAR(100),
-	senha VARCHAR(100)
+	nome VARCHAR(100) NOT NULL,
+	login VARCHAR(100) UNIQUE NOT NULL,
+	senha_hash VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE cliente (

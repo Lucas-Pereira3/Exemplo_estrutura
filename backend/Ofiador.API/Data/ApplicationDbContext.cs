@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Ofiador.API.Models;
 
 namespace Ofiador.API.Data
 {
@@ -8,11 +9,16 @@ namespace Ofiador.API.Data
             : base(options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Usuario>()
+                .HasKey(u => u.IdUsuario);
+        }
 
         // Por enquanto, sem DbSets - vamos adicionar depois
         // Quando criar os modelos, descomente as linhas abaixo:
         // public DbSet<Empresa> Empresas { get; set; }
-        // public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
         // public DbSet<Cliente> Clientes { get; set; }
         // public DbSet<Compra> Compras { get; set; }
         // public DbSet<Parcela> Parcelas { get; set; }

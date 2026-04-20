@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ofiador.API.Data;
+using Ofiador.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddCors(options =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+builder.Services.AddScoped<UsuarioService>();
 
 var app = builder.Build();
 

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ofiador.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36eb750585663e21eeb16ff0d204e7a3e611cac9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77ea63207cb2d33efab5d2e7aa3702edc5e80b91")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ofiador.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ofiador.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
