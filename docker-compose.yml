@@ -1,5 +1,4 @@
 services:
-  
   postgres:
     image: postgres:15-alpine
     container_name: ofiador_db
@@ -14,20 +13,19 @@ services:
     networks:
       - ofiador_network
 
-  
   backend:
     build: ./backend/Ofiador.API
     container_name: ofiador_backend
     ports:
       - "8080:8080"
     environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
     depends_on:
       - postgres
     networks:
       - ofiador_network
 
-  
   frontend:
     build: ./frontend
     container_name: ofiador_frontend
