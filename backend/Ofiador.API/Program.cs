@@ -32,7 +32,28 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+
+    var retries = 5;
+    var delay = TimeSpan.FromSeconds(5);
+
+    for (int i = 0; i < retries; i++)
+    {
+        try
+        {
+            db.Database.Migrate();
+            Console.WriteLine("Banco conectado com sucesso!");
+            break;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Tentativa {i + 1} falhou: {ex.Message}");
+
+            if (i == retries - 1)
+                throw;
+
+            Thread.Sleep(delay);
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.
