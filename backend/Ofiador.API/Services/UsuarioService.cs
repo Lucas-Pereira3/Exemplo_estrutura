@@ -16,7 +16,7 @@ namespace Ofiador.API.Services
 
         public bool SenhaForte(string senha)
         {
-            var regex = new Regex(@"^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$");
+            var regex = new Regex(@"^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$");
             return regex.IsMatch(senha);
         }
 

@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
         senha: userData.senha,
       });
 
-      toast.success("Cadastro realizado com sucesso!");
+      toast.success("Cadastro realizado com sucesso! Faça seu login.");
       return true;
     } catch (error) {
       console.error(error);
