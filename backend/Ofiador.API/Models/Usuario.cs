@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Ofiador.API.Models
 {
     public class Usuario
@@ -5,6 +7,8 @@ namespace Ofiador.API.Models
         public int IdUsuario { get; set; }
 
         public string Nome { get; set; } = string.Empty;
+
+        [EmailAddress]
         public string Login { get; set; } = string.Empty;
 
         public string SenhaHash { get; private set; } = string.Empty;
