@@ -10,6 +10,8 @@ namespace Ofiador.API.Models
 
         public string? Endereço { get; set; }
 
+        public string? Email { get; set; }
+
         public string? Telefone { get; set; }
     }
 }
