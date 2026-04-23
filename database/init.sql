@@ -19,10 +19,10 @@ CREATE TABLE cliente (
 	nome VARCHAR(100) NOT NULL,
 	cpf_cnpj VARCHAR(20) NOT NULL UNIQUE,
 	telefone VARCHAR(20),
-	email VARCHAR(100),
+	email VARCHAR(100) NOT NULL,
 	endereco TEXT,
 	limite DECIMAL(10,2),
-	id_empresa INT,
+	id_empresa INT NOT NULL,
 	FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
 );
 
