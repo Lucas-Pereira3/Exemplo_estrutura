@@ -8,7 +8,7 @@ namespace Ofiador.API.Models
 
         public string Cnpj { get; set; } = string.Empty;
 
-        public string? Endereço { get; set; }
+        public string? Endereco { get; set; }
 
         public string? Email { get; set; }
 

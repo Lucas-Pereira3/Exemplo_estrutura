@@ -20,7 +20,7 @@ namespace Ofiador.API.Models
 
         public decimal Limite { get; set; }
 
-        public int IdEmpresa { get; set; } 
+        public int IdEmpresa { get; set; }
 
         public Empresa? Empresa { get; set; }
     }
