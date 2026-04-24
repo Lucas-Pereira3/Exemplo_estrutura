@@ -20,8 +20,18 @@ namespace Ofiador.API.Services
             return regex.IsMatch(senha);
         }
 
+        // VERIFICAR SE EMAIL JÁ EXISTE
+        public bool EmailExiste(string login)
+        {
+            return _context.Usuarios.Any(u => u.Login == login);
+        }
+
         public Usuario CriarUsuario(string nome, string login, string senha)
         {
+            // VALIDAÇÃO: Verificar se o email já existe
+            if (EmailExiste(login))
+                throw new Exception("Email já cadastrado");
+
             if (!SenhaForte(senha))
                 throw new Exception("Senha fraca. Use pelo menos 8 caracteres, 1 maiúscula, 1 número e 1 símbolo.");
 

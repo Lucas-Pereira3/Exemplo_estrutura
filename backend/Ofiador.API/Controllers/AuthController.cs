@@ -18,15 +18,36 @@ namespace Ofiador.API.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody] AuthDTO dto)
         {
-            var usuario = _usuarioService.CriarUsuario(dto.Nome, dto.Login, dto.Senha);
-
-            return Ok(new
+            try
             {
-                usuario.IdUsuario,
-                usuario.Nome,
-                usuario.Login,
-                token = "fake-token"
-            });
+                // TENTAR CRIAR O USUÁRIO
+                var usuario = _usuarioService.CriarUsuario(dto.Nome, dto.Login, dto.Senha);
+
+                return Ok(new
+                {
+                    usuario.IdUsuario,
+                    usuario.Nome,
+                    usuario.Login,
+                    token = "fake-token"
+                });
+            }
+            catch (Exception ex)
+            {
+                // TRATAR O ERRO DE EMAIL DUPLICADO
+                if (ex.Message == "Email já cadastrado")
+                {
+                    return Conflict(new { message = "Este e-mail já está cadastrado" });
+                }
+                
+                // TRATAR O ERRO DE SENHA FRACA
+                if (ex.Message.Contains("Senha fraca"))
+                {
+                    return BadRequest(new { message = ex.Message });
+                }
+
+                // OUTROS ERROS
+                return StatusCode(500, new { message = "Erro interno no servidor" });
+            }
         }
 
         [HttpPost("login")]

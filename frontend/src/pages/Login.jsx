@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import toast from "react-hot-toast";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 import logo from "../assets/logo.png";
@@ -15,22 +14,49 @@ const Login = () => {
     senha: "",
     nome: "",
   });
+  // Estado para controlar se os campos já foram tocados (para mostrar erro)
+  const [touched, setTouched] = useState({
+    email: false,
+    senha: false,
+    nome: false,
+  });
 
   const { login, register } = useAuth();
   const navigate = useNavigate();
+
+  // Função para validar email e retornar mensagem específica
+  const getEmailError = (email) => {
+    if (!email) return null;
+
+    if (!email.includes("@")) {
+      return `Inclua um "@" no endereço de e-mail. "${email}" está com um "@" faltando.`;
+    }
+
+    if (email.includes("@")) {
+      const [localPart, domain] = email.split("@");
+      if (!localPart) return "Digite algo antes do '@'";
+      if (!domain) return "Digite algo depois do '@'";
+      if (!domain.includes(".")) {
+        return `Inclua um ponto "." após o "@". "${domain}" está com um ponto faltando.`;
+      }
+      if (domain.split(".").pop().length < 2) {
+        return "O domínio deve ter pelo menos 2 caracteres após o ponto";
+      }
+    }
+
+    return null;
+  };
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
 
-  // VALIDAÇÃO DE SENHA FORTE - 8 CARACTERES
   const validateStrongPassword = (senha) => {
     const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     return regex.test(senha);
   };
 
-  // Função para mostrar quais critérios faltam
   const getPasswordErrors = (senha) => {
     const errors = [];
     if (senha.length < 8) errors.push("• Mínimo 8 caracteres");
@@ -48,6 +74,13 @@ const Login = () => {
     });
   };
 
+  const handleBlur = (e) => {
+    setTouched({
+      ...touched,
+      [e.target.name]: true,
+    });
+  };
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -55,8 +88,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Marcar todos os campos como tocados
+    setTouched({
+      email: true,
+      senha: true,
+      nome: !isLogin, // Só marca nome se estiver em modo cadastro
+    });
+
+    // Validações
     if (!validateEmail(formData.email)) {
-      toast.error("Digite um email válido (exemplo@email.com)");
       return;
     }
 
@@ -65,23 +105,10 @@ const Login = () => {
       success = await login(formData.email, formData.senha);
     } else {
       if (!formData.nome.trim()) {
-        toast.error("Digite seu nome completo");
         return;
       }
 
       if (!validateStrongPassword(formData.senha)) {
-        const errors = getPasswordErrors(formData.senha);
-        toast.error(
-          <div>
-            <strong>Senha fraca! Requisitos:</strong>
-            <ul className="mt-1 ml-4">
-              {errors.map((err, i) => (
-                <li key={i}>{err}</li>
-              ))}
-            </ul>
-          </div>,
-          { duration: 5000 }
-        );
         return;
       }
 
@@ -103,15 +130,37 @@ const Login = () => {
           nome: "",
         });
         setShowPassword(false);
+        setTouched({
+          email: false,
+          senha: false,
+          nome: false,
+        });
       }
     }
   };
 
-  // Verifica os requisitos da senha em tempo real
+  // Verificações em tempo real
   const passwordErrors =
     !isLogin && formData.senha ? getPasswordErrors(formData.senha) : [];
   const isPasswordValid =
     !isLogin && formData.senha && passwordErrors.length === 0;
+
+  const isEmailValid = formData.email === "" || validateEmail(formData.email);
+  const emailErrorMessage = getEmailError(formData.email);
+  // Só mostra erro se o campo foi tocado E está inválido E não está vazio
+  const showEmailError =
+    touched.email && formData.email !== "" && !isEmailValid;
+  // Erro de campo vazio
+  const showEmailEmptyError = touched.email && formData.email === "";
+
+  const isNomeValid = formData.nome.trim() !== "";
+  const showNomeError = touched.nome && formData.nome !== "" && !isNomeValid;
+  const showNomeEmptyError = touched.nome && formData.nome === "";
+
+  // Validação da senha para campos vazios
+  const showSenhaEmptyError = touched.senha && formData.senha === "";
+  const showSenhaError =
+    !isLogin && touched.senha && formData.senha !== "" && !isPasswordValid;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -162,7 +211,8 @@ const Login = () => {
             </p>
           </div>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+            {/* CAMPO NOME COM VALIDAÇÃO VISUAL */}
             {!isLogin && (
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -171,31 +221,60 @@ const Login = () => {
                 <input
                   name="nome"
                   type="text"
-                  required
                   placeholder="Digite seu nome completo"
                   value={formData.nome}
                   onChange={handleChange}
-                  className="input mt-1"
+                  onBlur={handleBlur}
+                  className={`input mt-1 w-full ${
+                    showNomeError || showNomeEmptyError
+                      ? "border-red-500 focus:ring-red-500"
+                      : formData.nome !== "" && isNomeValid
+                      ? "border-green-500 focus:ring-green-500"
+                      : ""
+                  }`}
                 />
+                {showNomeEmptyError && (
+                  <p className="mt-1 text-xs text-red-500">
+                    Digite seu nome completo
+                  </p>
+                )}
+                {showNomeError && (
+                  <p className="mt-1 text-xs text-red-500">Nome inválido</p>
+                )}
               </div>
             )}
 
+            {/* CAMPO EMAIL COM VALIDAÇÃO VISUAL */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Email
               </label>
               <input
                 name="email"
-                type="email"
-                required
+                type="text"
                 placeholder="Digite seu endereço de e-mail"
                 value={formData.email}
                 onChange={handleChange}
-                className="input mt-1"
+                onBlur={handleBlur}
+                className={`input mt-1 w-full ${
+                  showEmailError || showEmailEmptyError
+                    ? "border-red-500 focus:ring-red-500"
+                    : formData.email !== "" && isEmailValid
+                    ? "border-green-500 focus:ring-green-500"
+                    : ""
+                }`}
               />
+              {showEmailEmptyError && (
+                <p className="mt-1 text-xs text-red-500">
+                  Digite seu endereço de e-mail
+                </p>
+              )}
+              {showEmailError && emailErrorMessage && (
+                <p className="mt-1 text-xs text-red-500">{emailErrorMessage}</p>
+              )}
             </div>
 
-            {/* CAMPO DE SENHA COM VALIDAÇÃO EM TEMPO REAL */}
+            {/* CAMPO SENHA COM VALIDAÇÃO VISUAL */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Senha
@@ -204,7 +283,6 @@ const Login = () => {
                 <input
                   name="senha"
                   type={showPassword ? "text" : "password"}
-                  required
                   placeholder={
                     isLogin
                       ? "Digite sua senha"
@@ -212,10 +290,11 @@ const Login = () => {
                   }
                   value={formData.senha}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   className={`input w-full pr-10 ${
-                    !isLogin && formData.senha && !isPasswordValid
+                    showSenhaEmptyError || showSenhaError
                       ? "border-red-500 focus:ring-red-500"
-                      : !isLogin && isPasswordValid
+                      : formData.senha !== "" && !showSenhaError
                       ? "border-green-500 focus:ring-green-500"
                       : ""
                   }`}
@@ -228,6 +307,11 @@ const Login = () => {
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </button>
               </div>
+
+              {/* Erro de campo vazio */}
+              {showSenhaEmptyError && (
+                <p className="mt-1 text-xs text-red-500">Digite sua senha</p>
+              )}
 
               {/* Feedback de validação em tempo real para cadastro */}
               {!isLogin && formData.senha && (
@@ -281,7 +365,14 @@ const Login = () => {
               )}
             </div>
 
-            <button type="submit" className="btn-primary w-full">
+            <button
+              type="submit"
+              className="btn-primary w-full"
+              disabled={
+                (!isLogin && !isNomeValid && formData.nome !== "") ||
+                (!isLogin && !isPasswordValid && formData.senha !== "")
+              }
+            >
               {isLogin ? "Entrar" : "Criar conta"}
             </button>
 
@@ -296,6 +387,11 @@ const Login = () => {
                     nome: "",
                   });
                   setShowPassword(false);
+                  setTouched({
+                    email: false,
+                    senha: false,
+                    nome: false,
+                  });
                 }}
                 className="text-sm text-blue-600 hover:text-blue-500"
               >
