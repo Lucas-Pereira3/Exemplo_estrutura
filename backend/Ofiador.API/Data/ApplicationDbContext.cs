@@ -51,6 +51,21 @@ namespace Ofiador.API.Data
                 .HasOne(c => c.Empresa)
                 .WithMany()
                 .HasForeignKey(c => c.IdEmpresa);
+
+            modelBuilder.Entity<Compra>()
+                .HasOne(c => c.Fatura)
+                .WithMany(f => f.Compras)
+                .HasForeignKey(c => c.IdFatura)
+                .IsRequired(false);    
+            // modelo Fatura
+
+            modelBuilder.Entity<Fatura>()
+                .HasKey(f => f.IdFatura);
+
+            modelBuilder.Entity<Fatura>()
+                .HasOne(f => f.Cliente)
+                .WithMany()
+                .HasForeignKey(f => f.IdCliente);
         }
 
         // Por enquanto, sem DbSets - vamos adicionar depois
@@ -60,7 +75,7 @@ namespace Ofiador.API.Data
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Compra> Compras { get; set; }
         // public DbSet<Parcela> Parcelas { get; set; }
-        // public DbSet<Fatura> Faturas { get; set; }
+        public DbSet<Fatura> Faturas { get; set; }
         // public DbSet<Pagamento> Pagamentos { get; set; }
     }
 }

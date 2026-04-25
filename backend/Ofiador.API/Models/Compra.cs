@@ -17,5 +17,9 @@ namespace Ofiador.API.Models
         public int IdEmpresa { get; set; }
 
         public Empresa? Empresa { get; set; }
+
+        public int? IdFatura { get; set; }
+
+        public Fatura? Fatura { get; set; }
     }
 }

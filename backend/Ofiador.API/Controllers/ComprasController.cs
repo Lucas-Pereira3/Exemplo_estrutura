@@ -38,6 +38,7 @@ namespace Ofiador.API.Controllers
             var compras = _context.Compras
                 .Include(c => c.Cliente)
                 .Include(c => c.Empresa)
+                .Include(c=> c.Fatura)
                 .ToList();
 
             return Ok(compras);
