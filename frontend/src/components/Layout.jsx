@@ -53,6 +53,7 @@ const Layout = () => {
                 src={logo1}
                 className="w-32 object-contain"
                 style={{ display: "block" }}
+                alt="Logo"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "https://via.placeholder.com/64x64?text=F";
@@ -140,7 +141,7 @@ const Layout = () => {
             <div className="flex flex-col items-center">
               <img
                 src={logo1}
-                alt="Logo Fiador"
+                alt="Logo"
                 className="h-8 w-auto mb-0"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -164,6 +165,7 @@ const Layout = () => {
           </div>
         </div>
 
+        {/* Mobile sidebar */}
         {sidebarOpen && (
           <div className="fixed inset-0 z-30 lg:hidden">
             <div
@@ -182,7 +184,7 @@ const Layout = () => {
                   <div className="mb-0">
                     <img
                       src={logo1}
-                      alt="Logo Fiador"
+                      alt="Logo"
                       className="h-24 w-auto mx-auto"
                       onError={(e) => {
                         e.target.onerror = null;
@@ -257,7 +259,7 @@ const Layout = () => {
         )}
       </div>
 
-      {/* Conteúdo principal - Área onde as páginas serão renderizadas */}
+      {/* Conteúdo principal */}
       <div className="lg:pl-72">
         <main className="py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
