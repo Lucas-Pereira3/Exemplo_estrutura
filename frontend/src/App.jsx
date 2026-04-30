@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Clientes from "./pages/Clientes";
 import Empresas from "./pages/Empresas";
+import Compras from "./pages/Compras";
 
 const theme = createTheme({
   palette: {
@@ -60,14 +61,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/clientes" element={<Clientes />} />
         <Route path="/empresas" element={<Empresas />} />
-        <Route
-          path="/compras"
-          element={
-            <div className="p-6 text-center text-gray-500">
-              Página de Compras em desenvolvimento
-            </div>
-          }
-        />
+        <Route path="/compras" element={<Compras />} />
         <Route
           path="/faturas"
           element={
