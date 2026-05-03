@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Clientes from "./pages/Clientes";
 import Empresas from "./pages/Empresas";
 import Compras from "./pages/Compras";
+import Relatorios from "./pages/Relatorios";
 
 const theme = createTheme({
   palette: {
@@ -80,11 +81,7 @@ function AppRoutes() {
         />
         <Route
           path="/relatorios"
-          element={
-            <div className="p-6 text-center text-gray-500">
-              Página de Relatórios em desenvolvimento
-            </div>
-          }
+          element={<Relatorios />}
         />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Route>
