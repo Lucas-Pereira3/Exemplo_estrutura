@@ -37,7 +37,7 @@ const Layout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Sidebar para desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72">
         <div
@@ -260,9 +260,9 @@ const Layout = () => {
       </div>
 
       {/* Conteúdo principal */}
-      <div className="lg:pl-72">
+      <div className="lg:pl-72 min-h-screen">
         <main className="py-8 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
+          <div className="w-full">
             <Outlet />
           </div>
         </main>
