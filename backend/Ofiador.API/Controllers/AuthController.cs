@@ -1,18 +1,23 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofiador.API.DTOs;
 using Ofiador.API.Services;
 
 namespace Ofiador.API.Controllers
 {
+    
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly UsuarioService _usuarioService;
 
-        public AuthController(UsuarioService usuarioService)
+        private readonly JwtService _jwtService;
+
+        public AuthController(UsuarioService usuarioService, JwtService jwtService)
         {
             _usuarioService = usuarioService;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -20,15 +25,28 @@ namespace Ofiador.API.Controllers
         {
             try
             {
+                
                 // TENTAR CRIAR O USUÁRIO
-                var usuario = _usuarioService.CriarUsuario(dto.Nome, dto.Login, dto.Senha);
+                var resultado = _usuarioService.CriarUsuario(dto.Nome, dto.Login, dto.Senha);
 
-                return Ok(new
+                
+               
+                if (!resultado.sucesso)
                 {
-                    usuario.IdUsuario,
-                    usuario.Nome,
-                    usuario.Login,
-                    token = "fake-token"
+                    if (resultado.mensagem.Contains("cadastrado"))
+                        return Conflict(new { message = resultado.mensagem });
+
+                    return BadRequest(new { message = resultado.mensagem });
+                }
+                
+                
+
+                return Created("",new
+                {
+                    resultado.usuario.IdUsuario,
+                    resultado.usuario.Nome,
+                    resultado.usuario.Login,
+                    
                 });
             }
             catch (Exception ex)
@@ -49,7 +67,7 @@ namespace Ofiador.API.Controllers
                 return StatusCode(500, new { message = "Erro interno no servidor" });
             }
         }
-
+        
         [HttpPost("login")]
         public IActionResult Login([FromBody] AuthDTO dto)
         {
@@ -62,13 +80,47 @@ namespace Ofiador.API.Controllers
 
             if (!senhaValida)
                 return Unauthorized(new { message = "Senha inválida" });
-
+            
+            var token = _jwtService.GerarToken(usuario);
             return Ok(new
             {
                 usuario.IdUsuario,
                 usuario.Nome,
                 usuario.Login,
-                token = "fake-token"
+                token 
+            });
+        }
+        //Logout
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new
+            {
+                message = "Logout realizado com sucesso"
+            });
+        }
+
+        //Refresh
+        [Authorize]
+        [HttpPost("refresh")]
+        public IActionResult RefreshToken()
+        {
+            var email = User.Identity?.Name;
+
+            var usuario = _usuarioService.BuscarPorLogin(email!);
+
+            if(usuario == null)
+            {
+                return Unauthorized(new{
+                    message = "usuario nâo autorizado"
+                });
+            }
+
+            var novoToken= _jwtService.GerarToken(usuario);
+
+            return Ok(new{
+                token = novoToken
             });
         }
     }

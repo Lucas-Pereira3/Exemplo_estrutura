@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ofiador.API.Data;
@@ -5,6 +6,7 @@ using Ofiador.API.Models;
 
 namespace Ofiador.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ClienteController : ControllerBase
@@ -34,6 +36,17 @@ namespace Ofiador.API.Controllers
 
             
             return Ok(clientes);
+        }
+
+        //Logout
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            return Ok(new
+            {
+                message = "Logout realizado com sucesso"
+            });
         }
     }
 }

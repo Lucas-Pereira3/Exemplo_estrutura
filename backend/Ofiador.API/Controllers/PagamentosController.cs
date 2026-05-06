@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Ofiador.API.Data;
 using Ofiador.API.Models;
@@ -6,6 +7,7 @@ using Ofiador.API.Models;
 namespace Ofiador.API.Controllers
 {
     
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
 
