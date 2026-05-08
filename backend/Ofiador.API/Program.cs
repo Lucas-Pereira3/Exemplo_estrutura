@@ -23,8 +23,8 @@ builder.Services.AddCors(options =>
     });
 });
 // ================= SERVICES =================
-
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<EmpresaService>();
 //====================== JWT ========================
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -66,7 +66,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 

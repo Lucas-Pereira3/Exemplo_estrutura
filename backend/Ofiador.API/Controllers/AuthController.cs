@@ -10,11 +10,11 @@ namespace Ofiador.API.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UsuarioService _usuarioService;
+        private readonly AuthService _usuarioService;
 
         private readonly JwtService _jwtService;
 
-        public AuthController(UsuarioService usuarioService, JwtService jwtService)
+        public AuthController(AuthService usuarioService, JwtService jwtService)
         {
             _usuarioService = usuarioService;
             _jwtService = jwtService;

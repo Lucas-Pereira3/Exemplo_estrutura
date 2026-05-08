@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ofiador.API.Data;
 using Ofiador.API.Models;
+using Ofiador.API.Services;
 
 namespace Ofiador.API.Controllers
 {
@@ -10,27 +11,29 @@ namespace Ofiador.API.Controllers
     [Route("api/[controller]")]
     public class EmpresaController : ControllerBase
     {
+        private readonly EmpresaService _empresaService;
         private readonly ApplicationDbContext _context;
 
-        public EmpresaController(ApplicationDbContext context)
+        public EmpresaController(ApplicationDbContext context, EmpresaService empresaService)
         {
+            _empresaService=empresaService;
             _context = context;
         }
 
         [HttpPost]
         public IActionResult CriarEmpresa([FromBody] Empresa empresa)
         {
-            var existe = _context.Empresas.Any(e => e.Cnpj == empresa.Cnpj);
+            var resultado = _empresaService.CriarEmpresa(empresa);
 
-            if (existe)
+            if (!resultado.sucesso)
             {
-                return BadRequest(new { erro = "Já existe uma empresa com esse CNPJ" });
+                return BadRequest(new
+                {
+                    erro = resultado.mensagem
+                });
             }
 
-            _context.Empresas.Add(empresa);
-            _context.SaveChanges();
-
-            return Ok(empresa);
+            return CreatedAtAction(nameof(BuscarEmpresa), new{id = empresa.IdEmpresa},empresa);
         }
 
         [HttpGet]
