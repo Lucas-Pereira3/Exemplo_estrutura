@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ofiador.API.Data;
 using Ofiador.API.Models;
-
+using Ofiador.API.Services;
+using Ofiador.API.DTOs;
 namespace Ofiador.API.Controllers
 {
     [Authorize]
@@ -11,42 +12,74 @@ namespace Ofiador.API.Controllers
     [Route("api/[controller]")]
     public class ClienteController : ControllerBase
     {
+        private readonly ClienteService _clienteService;
         private readonly ApplicationDbContext _context;
-
-        public ClienteController(ApplicationDbContext context) 
+        public ClienteController(ClienteService clienteService, ApplicationDbContext context) 
         { 
+            _clienteService = clienteService;
             _context = context;
         }
 
         [HttpPost]
         public IActionResult CriarCliente([FromBody] Cliente cliente) 
         { 
-            _context.Clientes.Add(cliente);
-            _context.SaveChanges();
+            var resultado= _clienteService.CriarCliente(cliente);
 
-            return Ok(cliente);
+            if (!resultado.sucesso)
+            {
+                return BadRequest(new
+                {
+                    erro = resultado.mensagem
+                });
+            }
+
+            return Created("", cliente);
         }
 
         [HttpGet]
         public IActionResult ListarClientes()
         {
-            var clientes = _context.Clientes
-            .Include(c => c.Empresa)
-            .ToList();
+            var clientes = _context.Clientes.Include( c => c.Empresa)
+            .Select(c =>new ClienteDTOs
+            {
+                IdCliente = c.IdCliente,
+                Nome = c.Nome,
+                Cpf_Cnpj = c.Cpf_Cnpj,
+                Email = c.Email,
+                Telefone = c.Telefone,
+                IdEmpresa = c.IdEmpresa,
+                Empresa = c.Empresa.Nome
+            }).ToList();
 
-            
             return Ok(clientes);
         }
 
-        //Logout
-        [Authorize]
-        [HttpPost("logout")]
-        public IActionResult Logout()
+        [HttpGet("{id}")]
+        public IActionResult BuscarClientes(int id)
         {
-            return Ok(new
+            var cliente = _context.Clientes
+                .Include(c=>c.Empresa)
+                .Where(c=>c.IdCliente==id)
+                .Select(c=> new ClienteDTOs
+                {
+                    IdCliente = c.IdCliente,
+                    Nome= c.Nome,
+                    Cpf_Cnpj = c.Cpf_Cnpj,
+                    Email = c.Email,
+                    Telefone = c.Telefone,
+                    IdEmpresa = c.IdEmpresa,
+                    Empresa = c.Empresa.Nome,
+                }).FirstOrDefault();
+
+            if (cliente == null)
             {
-                message = "Logout realizado com sucesso"
-            });
+                return NotFound(new
+                {
+                    erro = "Cliente não encontrado"
+                });
+            }
+
+            return Ok(cliente);
         }
     }
 }

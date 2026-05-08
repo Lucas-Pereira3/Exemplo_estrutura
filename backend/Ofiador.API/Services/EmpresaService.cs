@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
 using Ofiador.API.Data;
 using Ofiador.API.Models;
+
+namespace Ofiador.API.Services{
 public class EmpresaService
 {
     private readonly ApplicationDbContext _context;
@@ -59,8 +61,22 @@ public class EmpresaService
         return _context.Empresas.Any(e => e.Cnpj == cnpj);
     }
 
+    //Validação de Email
+     public bool EmailValido(string email)
+        {
+            email = email.Trim();
+            var regex = new Regex( @"^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook|yahoo)\.(com|com\.br|net)$",RegexOptions.IgnoreCase);
+            return regex.IsMatch(email);
+        }
+    
+    // VERIFICAR SE EMAIL JÁ EXISTE
+        public bool EmailExiste(string email)
+        {
+            return _context.Empresas.Any(e => e.Email == email);
+        }
     public (bool sucesso, string mensagem) CriarEmpresa(Empresa empresa)
     {
+        empresa.Email = empresa.Email.Trim().ToLower();
         if (string.IsNullOrWhiteSpace(empresa.Nome))
             {
                 return (false, "Nome é obrigatório");
@@ -76,6 +92,15 @@ public class EmpresaService
                 return (false, "Email é obrigatório");
             }
 
+            if (!EmailValido(empresa.Email))
+            {
+                return (false,"Email inválido");
+            }
+
+            if (EmailExiste(empresa.Email))
+            {
+                return(false,"Email já cadastrado");
+            }
             empresa.Cnpj = Regex.Replace(
                 empresa.Cnpj, @"[^\d]",""
             );
@@ -98,4 +123,5 @@ public class EmpresaService
 
         return (true, "empresa cadastrada com sucesso");
     }
+}
 }
