@@ -23,9 +23,53 @@ namespace Ofiador.API.Controllers
         {
             try
             {
+                decimal valorParcela =Math.Round(compra.Valor_Total / compra.Parcelas,2);
+
+               for(int i =0 ; i<compra.Parcelas; i++)
+                {
+                    var mesAtual = new DateTime(
+                    compra.Data_Compra.Year,
+                    compra.Data_Compra.Month,
+                    1,
+                    0,
+                    0,
+                    0,
+                    DateTimeKind.Utc
+                    ).AddMonths(i);
+                
+                    var dataReferencia= mesAtual.Date;
+                var fatura = _context.Faturas.FirstOrDefault(f=> f.IdCliente == compra.IdCliente && f.MesReferencia.Date == dataReferencia);
+
+                //Se não existir fatura
+                if(fatura == null)
+                {
+                    fatura = new Fatura
+                    {
+                        IdCliente = compra.IdCliente,
+                        MesReferencia = mesAtual,
+                        Vencimento = new DateTime(
+                            mesAtual.Year,
+                            mesAtual.Month,
+                            10,
+                            0,
+                            0,
+                            0,
+                            DateTimeKind.Utc
+                        ).AddMonths(1),
+                        Status="Pendente",
+                        Total= 0,
+                        Parcelas = compra.Parcelas
+                    };
+
+                    _context.Faturas.Add(fatura);
+                    _context.SaveChanges();
+                }
+                    fatura.Total += valorParcela;
+                
+                }
+                
                 _context.Compras.Add(compra);
                 _context.SaveChanges();
-
                 return Ok(compra);
             }
             catch (Exception ex)
