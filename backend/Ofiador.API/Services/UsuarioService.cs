@@ -16,7 +16,8 @@ namespace Ofiador.API.Services
 
         public bool EmailValido(string login)
         {
-            var regex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+            login = login.Trim();
+            var regex = new Regex( @"^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook|yahoo)\.(com|com\.br|net)$",RegexOptions.IgnoreCase);
             return regex.IsMatch(login);
         }
         public bool SenhaForte(string senha)
