@@ -25,6 +25,7 @@ builder.Services.AddCors(options =>
 // ================= SERVICES =================
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<EmpresaService>();
+builder.Services.AddScoped<ClienteService>();
 //====================== JWT ========================
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
