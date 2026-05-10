@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ofiador.API.Data;
 using Ofiador.API.Models;
-
+using Ofiador.API.DTOs;
 namespace Ofiador.API.Controllers
 {
     [Authorize]
@@ -38,6 +38,16 @@ namespace Ofiador.API.Controllers
                     ).AddMonths(i);
                 
                     var dataReferencia= mesAtual.Date;
+                //cliente não existente
+                var clienteExiste = _context.Clientes.Any(c => c.IdCliente == compra.IdCliente);
+
+                    if (!clienteExiste)
+                    {
+                        return BadRequest(new
+                        {
+                            erro = "cliente não encontrado"
+                        });
+                    }
                 var fatura = _context.Faturas.FirstOrDefault(f=> f.IdCliente == compra.IdCliente && f.MesReferencia.Date == dataReferencia);
 
                 //Se não existir fatura
@@ -85,7 +95,19 @@ namespace Ofiador.API.Controllers
                 .Include(c => c.Cliente)
                 .Include(c => c.Empresa)
                 .Include(c=> c.Fatura)
-                .ToList();
+                .Select(c=> new CompraDTOs
+                {
+                    IdCompra = c.IdCompra,
+
+                    Valor_Total = c.Valor_Total,
+
+                    Cliente = c.Cliente != null
+                        ? c.Cliente.Nome
+                        :string.Empty,
+                    Empresa = c.Cliente !=null && c.Cliente.Empresa != null
+                        ? c.Cliente.Empresa.Nome
+                        :string.Empty
+                }).ToList();
 
             return Ok(compras);
         }
