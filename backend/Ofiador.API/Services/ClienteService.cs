@@ -185,6 +185,15 @@ namespace Ofiador.API.Services
                 return (false,"CPF/CNPJ inválido");
             }
             
+            if(cliente.Limite <= 0)
+            {
+                return(false,"Limite é obrigatório");
+            }
+
+            if(cliente.Endereco == null)
+            {
+                return(false,"Endereço é obrigatório");
+            }
             var empresaExiste = _context.Empresas.Any(e=> e.IdEmpresa == cliente.IdEmpresa);
 
             if (!empresaExiste)
@@ -196,6 +205,88 @@ namespace Ofiador.API.Services
             _context.SaveChanges();
 
             return(true, "Cliente cadastrado com sucesso");
+        }
+
+        public (bool sucesso, string menssagem)AtualizarCliente(int id, Cliente clienteAtualizado)
+        {
+            var cliente = _context.Clientes.FirstOrDefault(c => c.IdCliente==id);
+
+            if(cliente == null)
+            {
+                return(false,"Cliente não encontrado");
+            }
+
+            clienteAtualizado.Email=clienteAtualizado.Email.Trim().ToLower();
+
+            clienteAtualizado.Cpf_Cnpj= Regex.Replace(clienteAtualizado.Cpf_Cnpj, @"[^\d]","");
+
+            //documento duplicado
+
+            var documentoExiste = _context.Clientes.Any(c=> c.Cpf_Cnpj == clienteAtualizado.Cpf_Cnpj && c.IdCliente != id);
+
+            if (documentoExiste)
+            {
+                return(false,"Documento já cadastrado");
+            }
+
+            //Email duplicado
+
+            var EmailExiste = _context.Clientes.Any(c => c.Email == clienteAtualizado.Email && c.IdCliente != id);
+
+            if (EmailExiste)
+            {
+                return(false,"Email já cadastradoo");
+            }
+            //Limite não nulo
+            if(clienteAtualizado.Limite <= 0)
+            {
+                return(false,"Limite de crédito é Obrigatório");
+            }
+            //Endereço obrigatório
+            if(clienteAtualizado.Endereco == null)
+            {
+                return(false,"O Endereco é obrigatório");
+            }
+            //validar Documento
+            if (!DocumentoValido(clienteAtualizado.Cpf_Cnpj))
+            {
+                return(false,"CPF/CNPJ Invalido");
+            }
+
+            //validar Email
+            if (!EmailValido(clienteAtualizado.Email))
+            {
+                return(false,"Email invalido");
+            }
+
+            //atualizar dados
+            cliente.Nome = clienteAtualizado.Nome;
+            cliente.Cpf_Cnpj=clienteAtualizado.Cpf_Cnpj;
+            cliente.Email=clienteAtualizado.Email;
+
+            cliente.Limite= clienteAtualizado.Limite;
+            cliente.Telefone=clienteAtualizado.Telefone;
+            cliente.IdEmpresa=clienteAtualizado.IdEmpresa;
+
+            _context.SaveChanges();
+
+            return(true,"Cliente atualizadocom Sucesso");
+        }
+
+        public(bool sucesso, string mensagem)ExcluirCLiente(int id)
+        {
+            var cliente = _context.Clientes.FirstOrDefault(c => c.IdCliente == id);
+
+            if(cliente == null)
+            {
+                return (false, "cliente não encontrado");
+            }
+
+            _context.Clientes.Remove(cliente);
+
+            _context.SaveChanges();
+
+            return (true,"Cliente excluido com sucesso");
         }
     }
 }

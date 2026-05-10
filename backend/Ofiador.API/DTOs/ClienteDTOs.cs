@@ -16,6 +16,11 @@ namespace Ofiador.API.DTOs
         public string Email {get; set;} = string.Empty;
 
         [Required]
+        public string Endereco {get; set;}= string.Empty;
+        [Required]
+        public decimal Limite {get; set;}
+
+        [Required]
         public string Telefone {get; set;} = string.Empty;
 
         public int IdEmpresa {get; set;}

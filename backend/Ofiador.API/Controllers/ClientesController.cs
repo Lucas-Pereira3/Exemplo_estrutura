@@ -46,6 +46,8 @@ namespace Ofiador.API.Controllers
                 Nome = c.Nome,
                 Cpf_Cnpj = c.Cpf_Cnpj,
                 Email = c.Email,
+                Endereco = c.Endereco,
+                Limite = c.Limite,
                 Telefone = c.Telefone,
                 IdEmpresa = c.IdEmpresa,
                 Empresa = c.Empresa.Nome
@@ -66,6 +68,8 @@ namespace Ofiador.API.Controllers
                     Nome= c.Nome,
                     Cpf_Cnpj = c.Cpf_Cnpj,
                     Email = c.Email,
+                    Endereco = c.Endereco,
+                    Limite = c.Limite,
                     Telefone = c.Telefone,
                     IdEmpresa = c.IdEmpresa,
                     Empresa = c.Empresa.Nome,
@@ -80,6 +84,44 @@ namespace Ofiador.API.Controllers
             }
 
             return Ok(cliente);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult AtualizarCliente(int id, [FromBody] Cliente cliente)
+        {
+            var resultado = _clienteService.AtualizarCliente(id, cliente);
+
+            if (!resultado.sucesso)
+            {
+                return BadRequest(new
+                {
+                    erro = resultado.menssagem
+                });
+            }
+
+            return Ok(new
+            {
+                mensagem= resultado.menssagem
+            });
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult ExcluirCliente(int id)
+        {
+            var resultado = _clienteService.ExcluirCLiente(id);
+
+            if (!resultado.sucesso)
+            {
+                return NotFound(new
+                {
+                    erro=resultado.mensagem
+                });
+            }
+
+            return Ok(new
+            {
+                mensagem = resultado.mensagem
+            });
         }
     }
 }
