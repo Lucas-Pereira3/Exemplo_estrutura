@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Ofiador.API.Data;
-using Ofiador.API.Services;
+using Ofiador.Infrastructure.Data;
+using Ofiador.Application.Services;
+using Ofiador.API;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

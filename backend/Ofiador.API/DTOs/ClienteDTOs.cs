@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Ofiador.API.Models;
+using Ofiador.Domain.Models;
 namespace Ofiador.API.DTOs
 {
     public class ClienteDTOs

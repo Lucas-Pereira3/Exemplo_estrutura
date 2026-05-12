@@ -15,4 +15,11 @@
 <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
   </ItemGroup>
 
+ 
+  <ItemGroup>
+    <ProjectReference Include="..\Ofiador.Application\Ofiador.Application.csproj" />
+    <ProjectReference Include="..\Ofiador.Domain\Ofiador.Domain.csproj" />
+    <ProjectReference Include="..\Ofiador.Infrastructure\Ofiador.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

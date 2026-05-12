@@ -14,7 +14,7 @@ services:
       - ofiador_network
 
   backend:
-    build: ./backend/Ofiador.API
+    build: ./backend
     container_name: ofiador_backend
     ports:
       - "8080:8080"
