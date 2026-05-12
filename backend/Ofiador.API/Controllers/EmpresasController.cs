@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Ofiador.API.Data;
-using Ofiador.API.Models;
-using Ofiador.API.Services;
+using Ofiador.Infrastructure.Data;
+using Ofiador.Domain.Models;
+using Ofiador.Application.Services;
 
 namespace Ofiador.API.Controllers
 {
