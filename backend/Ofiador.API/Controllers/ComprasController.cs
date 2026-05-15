@@ -5,6 +5,7 @@ using Ofiador.API.DTOs;
 using Ofiador.Application.Services;
 using Ofiador.Domain.Models;
 using Ofiador.Infrastructure.Data;
+using System.Linq.Expressions;
 namespace Ofiador.API.Controllers
 {
     [Authorize]
@@ -25,56 +26,38 @@ namespace Ofiador.API.Controllers
         [HttpPost]
         public IActionResult CriarCompra([FromBody] Compra compra)
         {
-            
-
-            if (!ModelState.IsValid) 
-            { 
-                return BadRequest(ModelState);
-            }
-
-            //Verifica se cliente existe
-            var clienteExiste = _context.Clientes.Any(c => c.IdCliente == compra.IdCliente);
-
-            if (!clienteExiste)
+            try
             {
-                return NotFound(new
+                var compraCriada = _compraService.CriarCompra(compra);
+
+                var response = new CompraDTOs
                 {
-                    erro = "Cliente não encontrado"
+                    IdCompra = compra.IdCompra,
+
+                    Valor_Total = compra.Valor_Total,
+
+                    Parcelas = compra.Parcelas,
+
+                    Cliente = compra.Cliente?.Nome ?? "",
+
+                    Empresa = compra.Empresa?.Nome ?? "",
+
+                    ParcelasCompra = compra.CompraParcelas.Select(cp => new ParcelaDTO
+                    {
+                        NumeroParcela = cp.NumeroParcela,
+                        ValorParcela = cp.ValorParcela,
+                    }).ToList()
+                };
+                return CreatedAtAction(nameof(BuscarCompra), new { id = compraCriada.IdCompra }, response);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(new
+                {
+                    erro = ex.Message,
                 });
             }
 
-            //Verifica se Empresa Existe
-            var empresaExiste = _context.Empresas.Any(e => e.IdEmpresa == compra.IdEmpresa);
-
-            if (!empresaExiste)
-            {
-                return NotFound(new
-                {
-                    erro = "Empresa não encontrada"
-                });
-            }
-
-            var compraCriada = _compraService.CriarCompra(compra);
-
-            var response = new CompraDTOs
-            {
-                IdCompra = compra.IdCompra,
-
-                Valor_Total = compra.Valor_Total,
-
-                Parcelas = compra.Parcelas,
-
-                Cliente = compra.Cliente?.Nome ?? "",
-
-                Empresa = compra.Empresa?.Nome ?? "",
-
-                ParcelasCompra = compra.CompraParcelas.Select(cp => new ParcelaDTO
-                {
-                    NumeroParcela = cp.NumeroParcela,
-                    ValorParcela = cp.ValorParcela,
-                }).ToList()
-            };
-            return CreatedAtAction(nameof(BuscarCompra), new { id = compraCriada.IdCompra }, response);
         }
 
         [HttpGet]
