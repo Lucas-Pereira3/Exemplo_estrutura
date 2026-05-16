@@ -50,7 +50,7 @@ namespace Ofiador.API.Controllers
                 };
                 return CreatedAtAction(nameof(BuscarCompra), new { id = compraCriada.IdCompra }, response);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -61,13 +61,13 @@ namespace Ofiador.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult ListarCompras() 
+        public IActionResult ListarCompras()
         {
             var compras = _context.Compras
                 .Include(c => c.Cliente)
                 .Include(c => c.Empresa)
-                .Include(c=>c.CompraParcelas)
-                .Select(c=> new CompraDTOs
+                .Include(c => c.CompraParcelas)
+                .Select(c => new CompraDTOs
                 {
                     IdCompra = c.IdCompra,
 
@@ -77,15 +77,22 @@ namespace Ofiador.API.Controllers
 
                     Cliente = c.Cliente != null
                         ? c.Cliente.Nome
-                        :string.Empty,
-                    Empresa = c.Cliente !=null && c.Cliente.Empresa != null
+                        : string.Empty,
+                    Empresa = c.Cliente != null && c.Cliente.Empresa != null
                         ? c.Cliente.Empresa.Nome
-                        :string.Empty,
+                        : string.Empty,
 
-                    ParcelasCompra = c.CompraParcelas.Select(cp => new ParcelaDTO{
-                           NumeroParcela=cp.NumeroParcela,
+                    ParcelasCompra = c.CompraParcelas.Select(cp => new ParcelaDTO
+                    {
+                        NumeroParcela = cp.NumeroParcela,
 
-                           ValorParcela=cp.ValorParcela,
+                        ValorParcela = cp.ValorParcela,
+
+                        Pago = cp.Pago,
+
+                        Status = cp.Status.ToString(),
+
+                        Datapagamento = cp.DataPagamento
                     }).ToList()
                 }).ToList();
 
@@ -97,7 +104,7 @@ namespace Ofiador.API.Controllers
         {
             var compra = _context.Compras
                 .Include(c => c.Cliente)
-                .Include (c=>c.Empresa)
+                .Include(c => c.Empresa)
                 .Include(c => c.CompraParcelas)
                 .FirstOrDefault(c => c.IdCompra == id);
 
@@ -122,10 +129,73 @@ namespace Ofiador.API.Controllers
                 {
                     NumeroParcela = cp.NumeroParcela,
                     ValorParcela = cp.ValorParcela,
+
+                    Pago = cp.Pago,
+
+                    Status = cp.Status.ToString(),
+
+                    Datapagamento = cp.DataPagamento
                 }).ToList()
             };
 
             return Ok(response);
+        }
+
+        [HttpGet("cliente/{clienteId}")]
+        public IActionResult BuscarComprasPorCliente(int clienteId)
+        {
+            //verificar cliente
+            var clienteExiste = _context.Clientes.Any(c => c.IdCliente == clienteId);
+
+            if (!clienteExiste)
+            {
+                return NotFound(new
+                {
+                    erro = "Cliente não encontrado"
+                });
+            }
+
+            var compra = _context.Compras
+                .Where(c => c.IdCliente == clienteId)
+
+                .Include(c => c.Cliente)
+
+                .Include(c => c.Empresa)
+
+                .Include(c => c.CompraParcelas)
+
+                .Select(c => new CompraDTOs
+                {
+                    IdCompra = c.IdCompra,
+
+                    Valor_Total = c.Valor_Total,
+
+                    Parcelas = c.Parcelas,
+
+                    Cliente = c.Cliente != null
+                        ? c.Cliente.Nome
+                        : string.Empty,
+
+                    Empresa = c.Empresa != null
+                        ? c.Empresa.Nome
+                        : string.Empty,
+
+                    ParcelasCompra = c.CompraParcelas
+                        .Select(cp => new ParcelaDTO
+                        {
+                            NumeroParcela = cp.NumeroParcela,
+
+                            ValorParcela = cp.ValorParcela,
+
+                            Pago = cp.Pago,
+
+                            Status = cp.Status.ToString(),
+
+                            Datapagamento = cp.DataPagamento
+                        }).ToList()
+                }).ToList();
+
+            return Ok(compra);
         }
     }
 }
