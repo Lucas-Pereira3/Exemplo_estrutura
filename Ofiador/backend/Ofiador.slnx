@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Ofiador.API/Ofiador.API.csproj" />
+  <Project Path="Ofiador.Application/Ofiador.Application.csproj" />
+  <Project Path="Ofiador.Domain/Ofiador.Domain.csproj" />
+  <Project Path="Ofiador.Infrastructure/Ofiador.Infrastructure.csproj" />
+</Solution>

@@ -1,0 +1,6 @@
+@Ofiador.API_HostAddress = http://localhost:5269
+
+GET {{Ofiador.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
